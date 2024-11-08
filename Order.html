@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Products</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .product {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            width: 250px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            margin-top: 30px;
+            border-collapse: collapse;
+            width: 70%;
+        }
+
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .remove-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+
+        #totalPrice {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .checkout-btn {
+            background-color: #f39c12;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: #e67e22;
+        }
+
+        hr {
+            width: 70%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Order Products</h1>
+    <hr>
+
+    <!-- Electronics Section -->
+    <h3>Electronics</h3>
+    <div class="product">
+        <p>LED Button Flashlight</p>
+        <p>$5.00</p>
+        <button onclick="addToTable('LED Button Flashlight', 5)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <p>LED and Buzzer Button</p>
+        <p>$5.00</p>
+        <button onclick="addToTable('LED and Buzzer Button', 5)">Add to Cart</button>
+    </div>
+
+    <!-- 3D Printing Section -->
+    <h3>3D Printing</h3>
+    <div class="product">
+        <p>3D Printed Object</p>
+        <p>$15.00</p>
+        <button onclick="addToTable('3D Printed Object', 15)">Add to Cart</button>
+    </div>
+
+    <!-- Table for displaying the cart -->
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="cartBody">
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <div id="totalPrice">Total: $0.00</div>
+
+    <button class="checkout-btn" onclick="checkout()">Checkout</button>
+
+    <script>
+        let cart = [];
+        let total = 0;
+
+        function addToTable(product, price) {
+            let cartBody = document.getElementById('cartBody');
+
+            // Create a new row
+            let row = document.createElement('tr');
+
+            // Create cells for product name, price, and the remove button
+            let productCell = document.createElement('td');
+            productCell.textContent = product;
+
+            let priceCell = document.createElement('td');
+            priceCell.textContent = `$${price.toFixed(2)}`;
+
+            let actionCell = document.createElement('td');
+            let removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.classList.add('remove-btn');
+            removeButton.onclick = function() {
+                cartBody.removeChild(row); // Remove the product from the table
+                total -= price; // Subtract the product's price from the total
+                cart = cart.filter(item => item.name !== product); // Remove from cart array
+                updateTotal(); // Update the total price
+            };
+
+            // Append the button to the action cell
+            actionCell.appendChild(removeButton);
+
+            // Append the cells to the row
+            row.appendChild(productCell);
+            row.appendChild(priceCell);
+            row.appendChild(actionCell);
+
+            // Add the row to the cart table
+            cartBody.appendChild(row);
+
+            // Add to cart array
+            cart.push({ name: product, price: price });
+
+            // Update the total price
+            total += price;
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let totalPrice = document.getElementById('totalPrice');
+            totalPrice.textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        function checkout() {
+            // Save cart data to localStorage before proceeding to checkout page
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.href = 'checkout.html'; // Redirect to checkout page
+        }
+    </script>
+
+</body>
+</html>
